@@ -12,14 +12,14 @@ module OTR
     JSON.parse(RestClient.get(url))["repositories"].map { |repo|
       Thread.new repo do |repo|
         name = repo["slug"]
-        url = "https://bitbucket.org/#{username}/#{name}"
-        html = RestClient.get("#{url}/descendants")
+        url = "https://bitbucket.org/#{username}/#{name}/descendants"
+        html = RestClient.get(url)
         repos[name] = {
           "name" => name,
           "watchers" => html.split("followers-count\">")[1].to_i,
           "forks" => html.split("Forks/queues (")[1].to_i,
           "fork" => repo["is_fork"],
-          "urls" => [url]
+          "urls" => ["https://bitbucket.org/#{username}/#{name}"]
         }
       end
     }.each { |thread| thread.join }
