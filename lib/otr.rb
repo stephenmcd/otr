@@ -12,13 +12,14 @@ module OTR
     JSON.parse(RestClient.get(url))["repositories"].map { |repo|
       Thread.new repo do |repo|
         name = repo["slug"]
-        url = "https://bitbucket.org/#{username}/#{name}/descendants"
-        html = RestClient.get(url)
+        url = "https://bitbucket.org/#{username}/#{name}"
+        html = RestClient.get("#{url}/descendants")
         repos[name] = {
           "name" => name,
           "watchers" => html.split("followers-count\">")[1].to_i,
           "forks" => html.split("Forks/queues (")[1].to_i,
-          "is_fork" => repo["is_fork"],
+          "fork" => repo["is_fork"],
+          "urls" => [url]
         }
       end
     }.each { |thread| thread.join }
@@ -34,10 +35,10 @@ module OTR
     repos = self.get_bb(bb_username)
     self.get_gh(gh_username).each do |repo|
       name = repo["name"]
-      repos[name] ||= {"forks" => 0, "watchers" => 0}
-      repos[name]["watchers"] += repo["watchers"]
-      repos[name]["forks"] += repo["forks"]
-      repos[name]["is_fork"] ||= repo["fork"]
+      repos[name] ||= {"forks" => 0, "watchers" => 0, "urls" => []}
+      repos[name]["urls"] << repo["url"]
+      %w[watchers forks].each { |k| repos[name][k] += repo[k] }
+      %w[fork name].each { |k| repos[name][k] ||= repo[k] }
     end
     repos.values
   end
