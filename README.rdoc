@@ -90,10 +90,10 @@ You can also use +otr+ in your own Ruby code:
   require 'rubygems'
   require 'otr'
 
-  = With a combined username:
+  # With a combined username:
   options = {:username => "stephenmcd"}
 
-  = Or with differing usernames:
+  # Or with differing usernames:
   options = {:github_username => "alice", :bitbucket_username => "bob"}
 
   json = OTR.get(options).to_json
