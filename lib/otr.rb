@@ -5,6 +5,7 @@ require "json"
 require "rest_client"
 
 module OTR
+  VERSION = "0.1.0"
 
   def self.get_bb(username)
     repos = {}
@@ -31,9 +32,9 @@ module OTR
     JSON.parse(RestClient.get(url))["user"]["repositories"]
   end
 
-  def self.get(gh_username, bb_username)
-    repos = self.get_bb(bb_username)
-    self.get_gh(gh_username).each do |repo|
+  def self.get(options)
+    repos = self.get_bb(options[:bitbucket_username] || options[:username])
+    self.get_gh(options[:github_username] || options[:username]).each do |repo|
       name = repo["name"]
       repos[name] ||= {"forks" => 0, "watchers" => 0, "urls" => []}
       repos[name]["urls"] << repo["url"]
