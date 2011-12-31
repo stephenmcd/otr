@@ -50,3 +50,16 @@ pre {
   opacity:0.5;
 }
 
+@media all and (max-width: 700px) {
+  .inner {width:auto;}
+  .main {
+    position:relative;
+    background:  -webkit-radial-gradient(rgba(31, 31, 91, 0.5),
+                                         rgba(31, 31, 91, 0.5) 35%,
+                                         rgba(31, 31, 91, 0.5));
+    background:     -moz-radial-gradient(rgba(31, 31, 91, 0.5),
+                                         rgba(31, 31, 91, 0.5) 35%,
+                                         rgba(31, 31, 91, 0.5));
+  }
+}
+
