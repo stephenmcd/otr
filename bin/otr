@@ -1,0 +1,48 @@
+#!/usr/bin/env ruby
+
+require "rubygems"
+require "optparse"
+require "lib/otr"
+
+
+options = {}
+
+option_parser = OptionParser.new do |opts|
+  opts.banner = "\nUsage: otr [options]\n\n"
+
+  opts.on("-u", "--username NAME", String,
+    "Combined GitHub / Bitbucket username") do |v|
+    options[:username] = v
+  end
+
+  opts.on("-g", "--github-username NAME", String,
+    "GitHub username if different from Bitbucket username (required without -u)") do |v|
+    options[:github_username] = v
+  end
+
+  opts.on("-b", "--bitbucket-username NAME", String,
+    "Bitbucket username if different from GitHub username (required without -u)") do |v|
+    options[:bitbucket_username] = v
+  end
+
+  opts.on("-h", "--help", "Show this message") do
+    puts opts
+    exit
+  end
+
+  opts.on("-v", "--version", "Show version") do
+    puts OTR::VERSION
+    exit
+  end
+end
+
+begin
+  option_parser.parse!
+  raise OptionParser::ParseError if options.size == 0
+rescue OptionParser::ParseError
+  # Display all options if anything goes wrong.
+  puts option_parser
+  exit
+end
+
+puts OTR.get(options).to_json
