@@ -1,0 +1,101 @@
+= One True Repo
+
+== One feed to rule them all, and in the mashup bind them.
+
+_One_ _True_ _Repo_ merges both the {GitHub}[http://github.com] and
+{Bitbucket}[http://bitbucket.org] APIs into a single JSON feed,
+for the purpose of combining numbers of watchers and forks across
+duplicate repositories. It comes as both a {Sinatra}[http://sinatrarb.com]
+app and command-line gem.
+
+=== Sinatra
+
+The Sinatra app is hosted on Heroku at
+{otr.jupo.org}[http://otr.jupo.org]. Add your username to the path to
+get your feed. For example my GitHub and Bitbucket username is
++stephenmcd+ so my feed is available at {otr.jupo.org/stephenmcd}[
+http://otr.jupo.org/stephenmcd]. If you have different usernames
+between GitHub and Bitbucket, you can use the URL
+{otr.jupo.org/github_username/bitbucket_username
+}[http://otr.jupo.org/github_username/bitbucket_username]
+to provide them separately. Note that feeds are cached for about 24
+hours.
+
+=== JSON
+
+Here's a sample of the JSON provided:
+
+  [
+      {
+          "name": "mezzanine",
+          "urls": [
+              "https://github.com/stephenmcd/mezzanine",
+              "https://bitbucket.org/stephenmcd/mezzanine"
+          ],
+          "watchers": 316,
+          "forks": 102,
+          "fork": false
+      },
+      {
+          "name": "django-socketio",
+          "urls": [
+              "https://github.com/stephenmcd/django-socketio",
+              "https://bitbucket.org/stephenmcd/django-socketio"
+          ],
+          "watchers": 112,
+          "forks": 11,
+          "fork": false
+      }
+  ]
+
+=== JSONP
+
+You can also append a +callback+ parameter to the Sinatra app's URLs,
+specifying the name of a JavaScript function to call:
+
+  <script>
+      var displayRepos = function(repos) {
+          // The repos argument will contain the
+          // JSON data for stephenmcd's feed.
+          var watchers = 0, forks = 0;
+          for (var i = 0; i < repos.length; i++) {
+              watchers += repos[i].watchers;
+              forks += repos[i].forks;
+          }
+          alert('Total watchers: ' + watchers + '\nTotal forks: ' + forks);
+      }
+  </script>
+  <script src="http://otr.jupo.org/stephenmcd?callback=displayRepos"></script>
+
+=== Ruby Gem
+
+_One_ _True_ _Repo_ is also an installable gem named +otr+. Install the
++otr+ gem with the following command:
+
+  $ gem install otr
+
+Once installed, +otr+ can be called from the command-line and will output
+its JSON feed:
+
+  Usage: otr [options]
+
+      -u, --username NAME              Combined GitHub / Bitbucket username
+      -g, --github-username NAME       GitHub username if different from
+                                       Bitbucket username (required without -u)
+      -b, --bitbucket-username NAME    Bitbucket username if different from
+                                       GitHub username (required without -u)
+      -h, --help                       Show this message
+      -v, --version                    Show version
+
+You can also use +otr+ in your own Ruby code:
+
+  require 'rubygems'
+  require 'otr'
+
+  = With a combined username:
+  options = {:username => "stephenmcd"}
+
+  = Or with differing usernames:
+  options = {:github_username => "alice", :bitbucket_username => "bob"}
+
+  json = OTR.get(options).to_json

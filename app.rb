@@ -1,6 +1,7 @@
 require "rubygems"
 require "sinatra"
 require "dalli"
+require "rdoc"
 require "./lib/otr"
 
 CACHE_TIMEOUT = 60*60*24
@@ -8,6 +9,10 @@ set :cache, Dalli::Client.new(ENV['MEMCACHE_SERVERS'] || "127.0.0.1",
                              :username => ENV['MEMCACHE_USERNAME'],
                              :password => ENV['MEMCACHE_PASSWORD'],
                              :expires_in => CACHE_TIMEOUT)
+
+get "/" do
+  rdoc open("#{Dir.pwd}/README.rdoc").read, :layout_engine => :erb
+end
 
 get "/:username" do
   call env.merge("PATH_INFO" => "/#{params[:username]}/#{params[:username]}")
