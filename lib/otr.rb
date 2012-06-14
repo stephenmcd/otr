@@ -28,8 +28,16 @@ module OTR
   end
 
   def self.get_gh(username)
-    url = "http://github.com/api/v1/json/#{username}"
-    JSON.parse(RestClient.get(url))["user"]["repositories"]
+    page = 0
+    all_repos = []
+    while true
+      page += 1
+      url = "https://api.github.com/users/#{username}/repos?page=#{page}"
+      repos = JSON.parse(RestClient.get(url))
+      break if repos.count == 0
+      all_repos += repos
+    end
+    all_repos
   end
 
   def self.get(options)
