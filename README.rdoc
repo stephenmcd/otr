@@ -1,5 +1,7 @@
 = One True Repo
 
+Created by {Stephen McDonald}[http://twitter.com/stephen_mcd]
+
 == One feed to rule them all, and in the mashup bind them.
 
 _One_ _True_ _Repo_ merges both the {GitHub}[http://github.com] and
