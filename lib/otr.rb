@@ -14,11 +14,11 @@ module OTR
       Thread.new repo do |repo|
         name = repo["slug"]
         url = "https://bitbucket.org/#{username}/#{name}/descendants"
-        html = RestClient.get(url)
+        html = RestClient.get(url).split("<span class=\"value\">")
         repos[name] = {
           "name" => name,
-          "watchers" => html.split("followers-count\">")[1].to_i,
-          "forks" => html.split("Forks/queues (")[1].to_i,
+          "watchers" => html[4].to_i,
+          "forks" => html[3].to_i,
           "fork" => repo["is_fork"],
           "urls" => ["https://bitbucket.org/#{username}/#{name}"]
         }
