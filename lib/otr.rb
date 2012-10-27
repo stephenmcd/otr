@@ -5,7 +5,7 @@ require "json"
 require "rest_client"
 
 module OTR
-  VERSION = "0.1.1"
+  VERSION = "0.1.2"
 
   def self.get_bb(username)
     repos = {}
