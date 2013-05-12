@@ -6,11 +6,16 @@ require "rest_client"
 
 module OTR
   VERSION = "0.1.2"
+  USER_AGENT = "otr.jupo.org"
+
+  def self.get_json(url)
+    JSON.parse(RestClient.get(url, :user_agent => USER_AGENT))
+  end
 
   def self.get_bb(username)
     repos = {}
     url = "https://api.bitbucket.org/1.0/users/#{username}/"
-    JSON.parse(RestClient.get(url))["repositories"].map { |repo|
+    self.get_json(url)["repositories"].map { |repo|
       Thread.new repo do |repo|
         name = repo["slug"]
         url = "https://bitbucket.org/#{username}/#{name}/descendants"
@@ -33,7 +38,7 @@ module OTR
     while true
       page += 1
       url = "https://api.github.com/users/#{username}/repos?page=#{page}"
-      repos = JSON.parse(RestClient.get(url))
+      repos = self.get_json(url)
       break if repos.count == 0
       all_repos += repos
     end
