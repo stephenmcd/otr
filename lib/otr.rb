@@ -5,7 +5,7 @@ require "json"
 require "rest_client"
 
 module OTR
-  VERSION = "0.1.2"
+  VERSION = "0.1.3"
   USER_AGENT = "otr.jupo.org"
 
   def self.get_json(url)
